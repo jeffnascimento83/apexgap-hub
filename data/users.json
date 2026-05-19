@@ -1,0 +1,36 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "username": "jefferson",
+      "name": "Jefferson",
+      "email": "jeffnascimento@gmail.com",
+      "passwordHash": "$2b$10$55ffVhUA25M0nVZ//Ox8xe1M4tzIZzKJZAzaxaz2c7OT9cBPUD5hS",
+      "role": "admin",
+      "tabs": [
+        "hub",
+        "diario",
+        "propostas",
+        "dashboard"
+      ],
+      "active": true,
+      "inviteToken": null,
+      "inviteExpiry": null
+    },
+    {
+      "id": "2",
+      "username": "erika",
+      "name": "Erika",
+      "email": "erika.cecilia.rodriguez@gmail.com",
+      "passwordHash": null,
+      "role": "user",
+      "tabs": [
+        "diario",
+        "dashboard"
+      ],
+      "active": false,
+      "inviteToken": "391dc7c29d040a15d2d6122a67ca330a6585010b5c1887e83472c8f504fdb9f2",
+      "inviteExpiry": "2026-05-13T23:36:37.453Z"
+    }
+  ]
+}

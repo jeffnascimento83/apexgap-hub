@@ -1,65 +1,103 @@
-import Image from "next/image";
+'use client'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import HubHome from '../components/HubHome'
+import DiarioPage from '../components/DiarioPage'
+import PropostasPage from '../components/PropostasPage'
+import DashboardPage from '../components/DashboardPage'
+import { AdminUsers } from '../components/AdminUsers'
 
-export default function Home() {
+type Tab = 'hub' | 'diario' | 'propostas' | 'dashboard'
+type Session = { userId: string; username: string; name: string; role: 'admin' | 'user'; tabs: string[] }
+
+const ALL_TABS: { id: Tab; label: string; icon: string }[] = [
+  { id: 'hub',       label: 'Hub',       icon: '⌂' },
+  { id: 'diario',    label: 'Diário',    icon: '📋' },
+  { id: 'propostas', label: 'Propostas', icon: '📄' },
+  { id: 'dashboard', label: 'Dashboard', icon: '📊' },
+]
+
+export default function Page() {
+  const router = useRouter()
+  const [session, setSession] = useState<Session | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [activeTab, setActiveTab] = useState<Tab>('hub')
+  const [showAdmin, setShowAdmin] = useState(false)
+
+  useEffect(() => {
+    fetch('/api/user-auth/me')
+      .then(r => r.json())
+      .then((s: Session | null) => {
+        if (!s) { router.push('/login'); return }
+        setSession(s)
+        const first = ALL_TABS.find(t => s.tabs.includes(t.id))
+        if (first) setActiveTab(first.id)
+        setLoading(false)
+      })
+      .catch(() => router.push('/login'))
+  }, [router])
+
+  async function handleLogout() {
+    await fetch('/api/user-auth/logout', { method: 'POST' })
+    router.push('/login')
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center">
+        <div className="flex gap-2">
+          {[0, 1, 2].map(i => (
+            <div key={i} className="w-1.5 h-1.5 rounded-full bg-white/20 animate-bounce"
+              style={{ animationDelay: `${i * 0.15}s` }} />
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  const visibleTabs = ALL_TABS.filter(t => session?.tabs.includes(t.id))
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-screen bg-[#0a0a0f] text-white">
+      {showAdmin && <AdminUsers onClose={() => setShowAdmin(false)} />}
+
+      <header className="border-b border-white/[0.06] bg-[#0d0d14]/80 backdrop-blur-xl sticky top-0 z-40">
+        <div className="w-[82%] mx-auto px-6 h-14 flex items-center justify-between">
+          <span className="text-xs font-bold tracking-[0.2em] uppercase text-white/30">APEXGAP · Hub</span>
+
+          <nav className="flex items-center gap-1">
+            {visibleTabs.map(tab => (
+              <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+                className={`px-4 py-1.5 rounded-md text-xs font-medium transition-all flex items-center gap-1.5 ${
+                  activeTab === tab.id ? 'bg-white/10 text-white' : 'text-white/40 hover:text-white/70'
+                }`}>
+                {tab.icon} {tab.label}
+              </button>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-3">
+            {session?.role === 'admin' && (
+              <button onClick={() => setShowAdmin(true)}
+                className="text-[10px] text-white/25 hover:text-white/60 transition-colors px-2 py-1 rounded border border-white/[0.06] hover:border-white/10">
+                Usuários
+              </button>
+            )}
+            <span className="text-[10px] text-white/20">{session?.name}</span>
+            <button onClick={handleLogout}
+              className="text-[10px] text-white/20 hover:text-white/50 transition-colors">
+              Sair
+            </button>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+      </header>
+
+      <main>
+        {activeTab === 'hub'       && session?.tabs.includes('hub')       && <HubHome />}
+        {activeTab === 'diario'    && session?.tabs.includes('diario')    && <DiarioPage />}
+        {activeTab === 'propostas' && session?.tabs.includes('propostas') && <PropostasPage />}
+        {activeTab === 'dashboard' && session?.tabs.includes('dashboard') && <DashboardPage />}
       </main>
     </div>
-  );
+  )
 }
