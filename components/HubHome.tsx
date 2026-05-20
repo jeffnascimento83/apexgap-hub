@@ -265,16 +265,26 @@ export default function HubHome() {
 
   return (
     <div className="w-[82%] mx-auto px-6 py-8">
-      {!authP && (
+      {!authP ? (
         <div className="mb-3 px-4 py-3 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-between">
           <span className="text-xs text-amber-400">Calendário pessoal não conectado</span>
           <a href="/api/auth/google/personal" className="text-xs text-amber-400 underline">Conectar</a>
         </div>
+      ) : (
+        <div className="mb-3 px-4 py-3 rounded-lg bg-white/[0.02] border border-white/[0.04] flex items-center justify-between">
+          <span className="text-xs text-white/30">Calendário pessoal conectado</span>
+          <a href="/api/auth/disconnect?account=personal" className="text-xs text-white/20 hover:text-red-400 transition-colors">Desconectar</a>
+        </div>
       )}
-      {!authA && (
+      {!authA ? (
         <div className="mb-6 px-4 py-3 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-between">
           <span className="text-xs text-amber-400">Calendário da agência não conectado</span>
           <a href="/api/auth/google/agency" className="text-xs text-amber-400 underline">Conectar</a>
+        </div>
+      ) : (
+        <div className="mb-6 px-4 py-3 rounded-lg bg-white/[0.02] border border-white/[0.04] flex items-center justify-between">
+          <span className="text-xs text-white/30">Calendário da agência conectado</span>
+          <a href="/api/auth/disconnect?account=agency" className="text-xs text-white/20 hover:text-red-400 transition-colors">Desconectar</a>
         </div>
       )}
 
