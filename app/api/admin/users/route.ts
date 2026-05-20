@@ -8,7 +8,7 @@ export async function GET() {
   if (!session || session.role !== 'admin') {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
-  const users = getUsers().map(({ passwordHash: _p, inviteToken: _t, ...u }) => u)
+  const users = (await getUsers()).map(({ passwordHash: _p, inviteToken: _t, ...u }) => u)
   return NextResponse.json(users)
 }
 
@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
   const { username, name, email, tabs } = await req.json() as {
     username: string; name: string; email: string; tabs: string[]
   }
-  const user = createUser({ username, name, email, tabs, role: 'user' })
+  const user = await createUser({ username, name, email, tabs, role: 'user' })
   await sendInviteEmail(email, name, user.inviteToken!)
   return NextResponse.json({ ok: true })
 }

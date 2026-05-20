@@ -1,6 +1,12 @@
-import fs from 'fs'
-import path from 'path'
+import { Redis } from '@upstash/redis'
 import crypto from 'crypto'
+
+const redis = new Redis({
+  url: process.env.KV_REST_API_URL!,
+  token: process.env.KV_REST_API_TOKEN!,
+})
+
+const KEY = 'users'
 
 export type UserRole = 'admin' | 'user'
 
@@ -17,33 +23,67 @@ export type User = {
   inviteExpiry: string | null
 }
 
-const DATA_PATH = path.join(process.cwd(), 'data', 'users.json')
+const SEED: User[] = [
+  {
+    id: '1',
+    username: 'jefferson',
+    name: 'Jefferson',
+    email: 'jeffnascimento@gmail.com',
+    passwordHash: '$2b$10$55ffVhUA25M0nVZ//Ox8xe1M4tzIZzKJZAzaxaz2c7OT9cBPUD5hS',
+    role: 'admin',
+    tabs: ['hub', 'diario', 'propostas', 'dashboard'],
+    active: true,
+    inviteToken: null,
+    inviteExpiry: null,
+  },
+  {
+    id: '2',
+    username: 'erika',
+    name: 'Erika',
+    email: 'erika.cecilia.rodriguez@gmail.com',
+    passwordHash: null,
+    role: 'user',
+    tabs: ['diario', 'dashboard'],
+    active: false,
+    inviteToken: null,
+    inviteExpiry: null,
+  },
+]
 
-function read(): User[] {
-  if (!fs.existsSync(DATA_PATH)) return []
-  return JSON.parse(fs.readFileSync(DATA_PATH, 'utf-8')).users as User[]
+async function read(): Promise<User[]> {
+  const users = await redis.get<User[]>(KEY)
+  if (!users) {
+    await redis.set(KEY, SEED)
+    return SEED
+  }
+  return users
 }
 
-function write(users: User[]) {
-  fs.writeFileSync(DATA_PATH, JSON.stringify({ users }, null, 2))
+async function write(users: User[]): Promise<void> {
+  await redis.set(KEY, users)
 }
 
-export function getUsers() { return read() }
-
-export function getUserById(id: string) {
-  return read().find(u => u.id === id) ?? null
+export async function getUsers(): Promise<User[]> {
+  return read()
 }
 
-export function getUserByUsername(username: string) {
-  return read().find(u => u.username === username) ?? null
+export async function getUserById(id: string): Promise<User | null> {
+  const users = await read()
+  return users.find(u => u.id === id) ?? null
 }
 
-export function getUserByInviteToken(token: string) {
-  return read().find(u => u.inviteToken === token) ?? null
+export async function getUserByUsername(username: string): Promise<User | null> {
+  const users = await read()
+  return users.find(u => u.username === username) ?? null
 }
 
-export function createUser(data: Pick<User, 'username' | 'name' | 'email' | 'tabs' | 'role'>): User {
-  const users = read()
+export async function getUserByInviteToken(token: string): Promise<User | null> {
+  const users = await read()
+  return users.find(u => u.inviteToken === token) ?? null
+}
+
+export async function createUser(data: Pick<User, 'username' | 'name' | 'email' | 'tabs' | 'role'>): Promise<User> {
+  const users = await read()
   const token = crypto.randomBytes(32).toString('hex')
   const user: User = {
     id: crypto.randomUUID(),
@@ -53,26 +93,27 @@ export function createUser(data: Pick<User, 'username' | 'name' | 'email' | 'tab
     inviteToken: token,
     inviteExpiry: new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString(),
   }
-  write([...users, user])
+  await write([...users, user])
   return user
 }
 
-export function updateUser(id: string, updates: Partial<User>) {
-  const users = read()
+export async function updateUser(id: string, updates: Partial<User>): Promise<User> {
+  const users = await read()
   const idx = users.findIndex(u => u.id === id)
   if (idx === -1) throw new Error('User not found')
   users[idx] = { ...users[idx], ...updates }
-  write(users)
+  await write(users)
   return users[idx]
 }
 
-export function deleteUser(id: string) {
-  write(read().filter(u => u.id !== id))
+export async function deleteUser(id: string): Promise<void> {
+  const users = await read()
+  await write(users.filter(u => u.id !== id))
 }
 
-export function generateInviteToken(id: string): string {
+export async function generateInviteToken(id: string): Promise<string> {
   const token = crypto.randomBytes(32).toString('hex')
-  updateUser(id, {
+  await updateUser(id, {
     inviteToken: token,
     inviteExpiry: new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString(),
   })

@@ -6,7 +6,7 @@ import { createSessionToken, SESSION_COOKIE } from '@/lib/session'
 export async function POST(req: NextRequest) {
   const { username, password } = await req.json() as { username: string; password: string }
 
-  const user = getUserByUsername(username)
+  const user = await getUserByUsername(username)
   if (!user || !user.active || !user.passwordHash) {
     return NextResponse.json({ error: 'Usuário ou senha inválidos' }, { status: 401 })
   }
