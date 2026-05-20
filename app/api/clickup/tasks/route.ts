@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
 
+export const revalidate = 60 // cache 1 min
+
 const BASE = 'https://api.clickup.com/api/v2'
 
 let cachedUserId: number | null = null

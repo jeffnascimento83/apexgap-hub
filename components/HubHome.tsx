@@ -191,6 +191,7 @@ export default function HubHome() {
   const [events, setEvents] = useState<CalendarEvent[]>([])
   const [tasks, setTasks] = useState<ClickUpTask[]>([])
   const [mentions, setMentions] = useState<any[]>([])
+  const [mentionsLoading, setMentionsLoading] = useState(false)
   const [authP, setAuthP] = useState(false)
   const [authA, setAuthA] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -211,21 +212,28 @@ export default function HubHome() {
   const load = useCallback(async () => {
     setLoading(true)
     try {
-      const [s, e, t, m] = await Promise.all([
+      const [s, e, t] = await Promise.all([
         fetch('/api/auth/status').then(r => r.ok ? r.json() : null).catch(() => null),
         fetch('/api/calendar/events').then(r => r.ok ? r.json() : []).catch(() => []),
         fetch('/api/clickup/tasks').then(r => r.ok ? r.json() : []).catch(() => []),
-        fetch('/api/clickup/mentions').then(r => r.ok ? r.json() : []).catch(() => []),
       ])
       if (s) { setAuthP(s.personal); setAuthA(s.agency) }
       if (Array.isArray(e)) setEvents(e)
       if (Array.isArray(t)) setTasks(t)
-      if (Array.isArray(m)) setMentions(m)
     } catch {}
     setLoading(false)
   }, [])
 
   useEffect(() => { load() }, [load])
+
+  useEffect(() => {
+    setMentionsLoading(true)
+    fetch('/api/clickup/mentions')
+      .then(r => r.ok ? r.json() : [])
+      .catch(() => [])
+      .then(m => { if (Array.isArray(m)) setMentions(m) })
+      .finally(() => setMentionsLoading(false))
+  }, [])
 
   const personalEvents = events.filter(e => e._source === 'personal')
   const agencyEvents = events.filter(e => e._source === 'agency')
@@ -467,9 +475,13 @@ export default function HubHome() {
               </div>
               <div className="space-y-3">
                 <h2 className="text-xs font-semibold tracking-[0.15em] uppercase text-white/40">Menções & Conversas</h2>
-                {mentions.length === 0 ? (
+                {mentionsLoading ? (
                   <div className="h-24 rounded-xl border border-white/[0.04] bg-white/[0.02] flex items-center justify-center">
-                    <p className="text-xs text-white/20">Nenhuma menção nos últimos 7 dias</p>
+                    <p className="text-xs text-white/20">Carregando menções...</p>
+                  </div>
+                ) : mentions.length === 0 ? (
+                  <div className="h-24 rounded-xl border border-white/[0.04] bg-white/[0.02] flex items-center justify-center">
+                    <p className="text-xs text-white/20">Nenhuma menção nos últimos 30 dias</p>
                   </div>
                 ) : (
                   <div className="space-y-2">

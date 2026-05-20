@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
 
+export const revalidate = 600 // cache 10 min
+
 const CLICKUP_TOKEN = process.env.CLICKUP_API_TOKEN!
 const TEAM_ID = '9013975152'
 const MY_USER_ID = 112021354

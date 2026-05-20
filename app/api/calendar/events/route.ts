@@ -3,6 +3,8 @@ import { google } from 'googleapis'
 import { createOAuthClient } from '@/lib/googleAuth'
 import { getTokens, saveTokens, type AccountTokens } from '@/lib/tokens'
 
+export const revalidate = 300 // cache 5 min
+
 async function getCalendarClient(account: 'personal' | 'agency') {
   const tokens = await getTokens()
   const accountTokens = tokens[account]
