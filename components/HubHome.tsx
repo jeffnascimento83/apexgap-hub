@@ -190,6 +190,7 @@ function MiniCalendar({
 export default function HubHome() {
   const [events, setEvents] = useState<CalendarEvent[]>([])
   const [tasks, setTasks] = useState<ClickUpTask[]>([])
+  const [mentions, setMentions] = useState<any[]>([])
   const [authP, setAuthP] = useState(false)
   const [authA, setAuthA] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -210,14 +211,16 @@ export default function HubHome() {
   const load = useCallback(async () => {
     setLoading(true)
     try {
-      const [s, e, t] = await Promise.all([
+      const [s, e, t, m] = await Promise.all([
         fetch('/api/auth/status').then(r => r.ok ? r.json() : null).catch(() => null),
         fetch('/api/calendar/events').then(r => r.ok ? r.json() : []).catch(() => []),
         fetch('/api/clickup/tasks').then(r => r.ok ? r.json() : []).catch(() => []),
+        fetch('/api/clickup/mentions').then(r => r.ok ? r.json() : []).catch(() => []),
       ])
       if (s) { setAuthP(s.personal); setAuthA(s.agency) }
       if (Array.isArray(e)) setEvents(e)
       if (Array.isArray(t)) setTasks(t)
+      if (Array.isArray(m)) setMentions(m)
     } catch {}
     setLoading(false)
   }, [])
@@ -464,9 +467,33 @@ export default function HubHome() {
               </div>
               <div className="space-y-3">
                 <h2 className="text-xs font-semibold tracking-[0.15em] uppercase text-white/40">Menções & Conversas</h2>
-                <div className="h-48 rounded-xl border border-white/[0.04] bg-white/[0.02] flex items-center justify-center">
-                  <p className="text-xs text-white/20">Em breve</p>
-                </div>
+                {mentions.length === 0 ? (
+                  <div className="h-24 rounded-xl border border-white/[0.04] bg-white/[0.02] flex items-center justify-center">
+                    <p className="text-xs text-white/20">Nenhuma menção nos últimos 7 dias</p>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {mentions.map((m: any) => (
+                      <a key={m.commentId} href={m.taskUrl} target="_blank" rel="noreferrer"
+                        className="block rounded-xl border border-white/[0.04] bg-white/[0.02] hover:bg-white/[0.04] p-3 transition-all">
+                        <div className="flex items-start gap-2">
+                          <div className="w-1 h-5 rounded-full bg-emerald-400/60 flex-shrink-0 mt-0.5" />
+                          <div className="min-w-0 flex-1">
+                            <p className="text-[11px] text-white/70 font-medium truncate">{m.taskName}</p>
+                            <p className="text-[10px] text-white/40 mt-0.5 line-clamp-2">{m.commentText}</p>
+                            <div className="flex items-center gap-2 mt-1">
+                              <span className="text-[9px] text-white/25">{m.author}</span>
+                              <span className="text-[9px] text-white/20">·</span>
+                              <span className="text-[9px] text-white/25">
+                                {new Date(m.date).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </a>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           )}
