@@ -21,10 +21,10 @@ function hasMention(comment: any[]): boolean {
 }
 
 export async function GET() {
-  const since = Date.now() - 7 * 24 * 60 * 60 * 1000
+  const since = Date.now() - 30 * 24 * 60 * 60 * 1000
 
   const data = await clickup(
-    `/team/${TEAM_ID}/task?date_updated_gt=${since}&limit=30&include_closed=true&order_by=updated`
+    `/team/${TEAM_ID}/task?date_updated_gt=${since}&limit=100&include_closed=true&order_by=updated`
   )
   if (!data) return NextResponse.json([])
 
