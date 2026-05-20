@@ -15,8 +15,8 @@ export async function GET(req: NextRequest) {
   const account = state as 'personal' | 'agency'
   const client = createOAuthClient()
   const { tokens } = await client.getToken(code!)
-  const existing = getTokens()
-  saveTokens({ ...existing, [account]: tokens })
+  const existing = await getTokens()
+  await saveTokens({ ...existing, [account]: tokens })
 
   return NextResponse.redirect(`${BASE_URL}?connected=${account}`)
 }

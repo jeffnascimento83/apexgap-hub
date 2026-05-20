@@ -1,7 +1,9 @@
-import fs from 'fs'
-import path from 'path'
+import { Redis } from '@upstash/redis'
 
-const TOKENS_FILE = path.join(process.cwd(), '.tokens.json')
+const redis = new Redis({
+  url: process.env.STORAGE_URL!,
+  token: process.env.STORAGE_TOKEN!,
+})
 
 export interface AccountTokens {
   access_token: string
@@ -16,15 +18,11 @@ export interface Tokens {
   agency?: AccountTokens
 }
 
-export function getTokens(): Tokens {
-  try {
-    if (!fs.existsSync(TOKENS_FILE)) return {}
-    return JSON.parse(fs.readFileSync(TOKENS_FILE, 'utf-8'))
-  } catch {
-    return {}
-  }
+export async function getTokens(): Promise<Tokens> {
+  const tokens = await redis.get<Tokens>('oauth_tokens')
+  return tokens ?? {}
 }
 
-export function saveTokens(tokens: Tokens) {
-  fs.writeFileSync(TOKENS_FILE, JSON.stringify(tokens, null, 2))
+export async function saveTokens(tokens: Tokens): Promise<void> {
+  await redis.set('oauth_tokens', tokens)
 }
