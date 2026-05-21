@@ -18,6 +18,7 @@ export type User = {
   passwordHash: string | null
   role: UserRole
   tabs: string[]
+  kokoOnly: boolean
   active: boolean
   inviteToken: string | null
   inviteExpiry: string | null
@@ -32,6 +33,7 @@ const SEED: User[] = [
     passwordHash: '$2b$10$55ffVhUA25M0nVZ//Ox8xe1M4tzIZzKJZAzaxaz2c7OT9cBPUD5hS',
     role: 'admin',
     tabs: ['hub', 'diario', 'propostas', 'dashboard'],
+    kokoOnly: false,
     active: true,
     inviteToken: null,
     inviteExpiry: null,
@@ -44,6 +46,7 @@ const SEED: User[] = [
     passwordHash: null,
     role: 'user',
     tabs: ['diario', 'dashboard'],
+    kokoOnly: false,
     active: false,
     inviteToken: null,
     inviteExpiry: null,
@@ -82,7 +85,7 @@ export async function getUserByInviteToken(token: string): Promise<User | null> 
   return users.find(u => u.inviteToken === token) ?? null
 }
 
-export async function createUser(data: Pick<User, 'username' | 'name' | 'email' | 'tabs' | 'role'>): Promise<User> {
+export async function createUser(data: Pick<User, 'username' | 'name' | 'email' | 'tabs' | 'role' | 'kokoOnly'>): Promise<User> {
   const users = await read()
   const token = crypto.randomBytes(32).toString('hex')
   const user: User = {

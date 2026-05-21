@@ -22,6 +22,7 @@ export async function POST(req: NextRequest) {
     name: user.name,
     role: user.role,
     tabs: user.tabs,
+    kokoOnly: user.kokoOnly ?? false,
   })
 
   const res = NextResponse.json({ ok: true })

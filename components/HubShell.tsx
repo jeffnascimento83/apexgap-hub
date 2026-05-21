@@ -68,7 +68,7 @@ export default function HubShell({ session }: { session: SessionPayload }) {
 
       <main>
         {activeTab === 'hub'       && session.tabs.includes('hub')       && <HubHome />}
-        {activeTab === 'diario'    && session.tabs.includes('diario')    && <DiarioPage />}
+        {activeTab === 'diario'    && session.tabs.includes('diario')    && <DiarioPage session={session} />}
         {activeTab === 'propostas' && session.tabs.includes('propostas') && <PropostasPage />}
         {activeTab === 'dashboard' && session.tabs.includes('dashboard') && <DashboardPage />}
       </main>

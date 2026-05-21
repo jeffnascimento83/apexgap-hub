@@ -12,6 +12,7 @@ export type SessionPayload = {
   name: string
   role: 'admin' | 'user'
   tabs: string[]
+  kokoOnly: boolean
 }
 
 export async function createSessionToken(payload: SessionPayload): Promise<string> {

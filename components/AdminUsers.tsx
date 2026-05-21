@@ -24,7 +24,7 @@ export function AdminUsers({ onClose }: { onClose: () => void }) {
   const [showForm, setShowForm] = useState(false)
   const [sending, setSending] = useState<string | null>(null)
 
-  const [form, setForm] = useState({ name: '', username: '', email: '', tabs: ['diario', 'dashboard'] })
+  const [form, setForm] = useState({ name: '', username: '', email: '', tabs: ['diario', 'dashboard'], kokoOnly: false })
   const [saving, setSaving] = useState(false)
   const [formError, setFormError] = useState('')
 
@@ -49,7 +49,7 @@ export function AdminUsers({ onClose }: { onClose: () => void }) {
       body: JSON.stringify(form),
     })
     if (res.ok) {
-      setForm({ name: '', username: '', email: '', tabs: ['diario', 'dashboard'] })
+      setForm({ name: '', username: '', email: '', tabs: ['diario', 'dashboard'], kokoOnly: false })
       setShowForm(false)
       await load()
     } else {
@@ -136,6 +136,16 @@ export function AdminUsers({ onClose }: { onClose: () => void }) {
                     </button>
                   ))}
                 </div>
+              </div>
+              <div className="flex items-center justify-between px-3 py-2.5 rounded-lg bg-white/[0.03] border border-white/[0.06]">
+                <div>
+                  <p className="text-[11px] text-white/50">Ver apenas clientes Koko</p>
+                  <p className="text-[10px] text-white/20">Restringe o Diário aos clientes da Koko</p>
+                </div>
+                <button type="button" onClick={() => setForm(f => ({ ...f, kokoOnly: !f.kokoOnly }))}
+                  className={`w-9 h-5 rounded-full transition-all relative ${form.kokoOnly ? 'bg-violet-600' : 'bg-white/10'}`}>
+                  <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${form.kokoOnly ? 'left-4' : 'left-0.5'}`} />
+                </button>
               </div>
               {formError && <p className="text-xs text-red-400/80">{formError}</p>}
               <div className="flex gap-2 pt-1">

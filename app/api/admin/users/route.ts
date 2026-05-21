@@ -17,10 +17,10 @@ export async function POST(req: NextRequest) {
   if (!session || session.role !== 'admin') {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
-  const { username, name, email, tabs } = await req.json() as {
-    username: string; name: string; email: string; tabs: string[]
+  const { username, name, email, tabs, kokoOnly } = await req.json() as {
+    username: string; name: string; email: string; tabs: string[]; kokoOnly: boolean
   }
-  const user = await createUser({ username, name, email, tabs, role: 'user' })
+  const user = await createUser({ username, name, email, tabs, role: 'user', kokoOnly: kokoOnly ?? false })
   await sendInviteEmail(email, name, user.inviteToken!)
   return NextResponse.json({ ok: true })
 }
