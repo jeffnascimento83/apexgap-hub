@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
-import HubHome from './HubHome'
+import HubHome from './HubHome_NEW'
 import { AdminUsers } from './AdminUsers'
 import type { SessionPayload } from '../lib/session'
 

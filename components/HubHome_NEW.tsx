@@ -93,6 +93,28 @@ function getMonthDays(year: number, month: number) {
 
 // Task Card Component
 function TaskCard({ task }: { task: ClickUpTask }) {
+  // Cores para clientes (pastas)
+  const clientColors: Record<string, { bg: string; text: string }> = {
+    'default': { bg: 'bg-blue-500/20', text: 'text-blue-300' },
+    'Koko': { bg: 'bg-purple-500/20', text: 'text-purple-300' },
+    'Apex': { bg: 'bg-pink-500/20', text: 'text-pink-300' },
+    'Digital': { bg: 'bg-cyan-500/20', text: 'text-cyan-300' },
+    'Social': { bg: 'bg-emerald-500/20', text: 'text-emerald-300' },
+    'Ads': { bg: 'bg-orange-500/20', text: 'text-orange-300' },
+  }
+
+  const getClientColor = (folderName?: string) => {
+    if (!folderName) return clientColors['default']
+    for (const [key, color] of Object.entries(clientColors)) {
+      if (key !== 'default' && folderName.toLowerCase().includes(key.toLowerCase())) {
+        return color
+      }
+    }
+    return clientColors['default']
+  }
+
+  const clientColor = getClientColor(task.folder?.name)
+
   return (
     <a href={task.url} target="_blank" rel="noopener noreferrer"
       className="block p-3 rounded-lg border border-white/[0.08] bg-white/[0.02] hover:bg-white/[0.05] transition-all group">
@@ -112,7 +134,7 @@ function TaskCard({ task }: { task: ClickUpTask }) {
       </div>
 
       {task.folder && (
-        <div className="text-xs text-white/40 truncate">
+        <div className={`text-xs px-2 py-1 rounded-full w-fit ${clientColor.bg} ${clientColor.text} truncate`}>
           📁 {task.folder.name}
         </div>
       )}
@@ -182,7 +204,9 @@ export default function HubHomeNew() {
     return acc
   }, {} as Record<string, ClickUpTask[]>)
 
-  const spaces = ['Kala', 'Kongo', 'Koko Educação', 'Kora'].filter(s => s in tasksBySpace)
+  // Ordem específica dos espaços
+  const spaceOrder = ['Koko Educação', 'Kala', 'Kongo', 'Kora']
+  const spaces = spaceOrder.filter(s => s in tasksBySpace)
 
   return (
     <div className="w-full bg-gradient-to-b from-[#0f0f17] to-[#1a1a28] min-h-screen">
