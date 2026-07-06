@@ -115,11 +115,42 @@ function TaskCard({ task }: { task: ClickUpTask }) {
 
   const clientColor = getClientColor(task.folder?.name)
 
+  // Formatar data de entrega
+  const getDueDate = () => {
+    if (!task.due_date) return null
+    return new Date(parseInt(task.due_date))
+  }
+
+  const dueDate = getDueDate()
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
+  const getDueDateStatus = () => {
+    if (!dueDate) return { text: '', color: '', bg: '' }
+
+    const dueDateNormalized = new Date(dueDate)
+    dueDateNormalized.setHours(0, 0, 0, 0)
+
+    const isOverdue = dueDateNormalized < today
+    const isToday = dueDateNormalized.getTime() === today.getTime()
+
+    const formatted = dueDateNormalized.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })
+
+    if (isOverdue) {
+      return { text: formatted, color: 'text-red-300', bg: 'bg-red-500/30 border-red-500/50' }
+    } else if (isToday) {
+      return { text: formatted, color: 'text-yellow-300', bg: 'bg-yellow-500/30 border-yellow-500/50' }
+    }
+    return { text: formatted, color: 'text-white/60', bg: 'bg-white/[0.05] border-white/[0.08]' }
+  }
+
+  const dueDateStatus = getDueDateStatus()
+
   return (
     <a href={task.url} target="_blank" rel="noopener noreferrer"
       className="block p-3 rounded-lg border border-white/[0.08] bg-white/[0.02] hover:bg-white/[0.05] transition-all group">
       <div className="flex items-start justify-between gap-2 mb-2">
-        <h4 className="text-xs font-semibold text-white/80 group-hover:text-white line-clamp-2">{task.name}</h4>
+        <h4 className="text-xs font-semibold text-white/80 group-hover:text-white line-clamp-2 flex-1">{task.name}</h4>
       </div>
 
       <div className="flex items-center gap-2 flex-wrap mb-2">
@@ -132,6 +163,12 @@ function TaskCard({ task }: { task: ClickUpTask }) {
           </span>
         )}
       </div>
+
+      {dueDateStatus.text && (
+        <div className={`text-xs px-2.5 py-1 rounded-lg border w-fit font-medium mb-2 ${dueDateStatus.bg} ${dueDateStatus.color}`}>
+          📅 {dueDateStatus.text}
+        </div>
+      )}
 
       {task.folder && (
         <div className={`text-xs px-2 py-1 rounded-full w-fit ${clientColor.bg} ${clientColor.text} truncate`}>
