@@ -191,13 +191,13 @@ function TaskColumn({ spaceName, tasks }: { spaceName: string; tasks: ClickUpTas
   const color = spaceColors[spaceName] || 'border-white/10 bg-white/[0.02]'
 
   return (
-    <div className={`flex flex-col gap-3 w-80 flex-shrink-0 rounded-xl border ${color} p-4`}>
+    <div className={`flex flex-col gap-3 w-80 flex-shrink-0 rounded-xl border ${color} p-4 h-full`}>
       <div>
         <h3 className="text-sm font-semibold text-white/80">{spaceName}</h3>
         <p className="text-xs text-white/40">{tasks.length} tarefa{tasks.length !== 1 ? 's' : ''}</p>
       </div>
 
-      <div className="space-y-2 max-h-96 overflow-y-auto pr-2">
+      <div className="space-y-2 overflow-y-auto pr-2 flex-1">
         {tasks.map(task => (
           <TaskCard key={task.id} task={task} />
         ))}
@@ -246,8 +246,8 @@ export default function HubHomeNew() {
   const spaces = spaceOrder.filter(s => s in tasksBySpace)
 
   return (
-    <div className="w-full bg-gradient-to-b from-[#0f0f17] to-[#1a1a28] min-h-screen">
-      <div className="w-full px-6 py-8 space-y-8">
+    <div className="w-full bg-gradient-to-b from-[#0f0f17] to-[#1a1a28] min-h-screen flex flex-col">
+      <div className="w-full px-6 py-8 space-y-8 flex-1 flex flex-col">
 
         {/* Auth Status */}
         <div className="space-y-2">
@@ -281,7 +281,7 @@ export default function HubHomeNew() {
         </section>
 
         {/* Tarefas por Espaço */}
-        <section>
+        <section className="flex-1 flex flex-col">
           <h2 className="text-xs font-semibold tracking-widest uppercase text-white/40 mb-4">Minhas Demandas</h2>
           {loading ? (
             <div className="h-40 rounded-xl bg-white/[0.03] animate-pulse" />
@@ -290,8 +290,8 @@ export default function HubHomeNew() {
               <p className="text-xs text-white/30">Nenhuma tarefa encontrada</p>
             </div>
           ) : (
-            <div className="overflow-x-auto pb-4">
-              <div className="flex gap-6 min-w-max">
+            <div className="overflow-x-auto pb-4 flex-1">
+              <div className="flex gap-6 min-w-max h-full">
                 {spaces.map(space => (
                   <TaskColumn key={space} spaceName={space} tasks={tasksBySpace[space]} />
                 ))}
