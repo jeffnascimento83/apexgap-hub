@@ -247,7 +247,7 @@ export default function HubHomeNew() {
 
   return (
     <div className="w-full bg-gradient-to-b from-[#0f0f17] to-[#1a1a28] min-h-screen">
-      <div className="max-w-[1600px] mx-auto px-6 py-8 space-y-8">
+      <div className="w-full px-6 py-8 space-y-8">
 
         {/* Auth Status */}
         <div className="space-y-2">
