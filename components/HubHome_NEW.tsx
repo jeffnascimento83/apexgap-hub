@@ -191,7 +191,7 @@ function TaskColumn({ spaceName, tasks }: { spaceName: string; tasks: ClickUpTas
   const color = spaceColors[spaceName] || 'border-white/10 bg-white/[0.02]'
 
   return (
-    <div className={`flex flex-col gap-3 w-80 flex-shrink-0 rounded-xl border ${color} p-4 h-full`}>
+    <div className={`flex flex-col gap-3 flex-1 rounded-xl border ${color} p-4 h-full`}>
       <div>
         <h3 className="text-sm font-semibold text-white/80">{spaceName}</h3>
         <p className="text-xs text-white/40">{tasks.length} tarefa{tasks.length !== 1 ? 's' : ''}</p>
@@ -290,12 +290,10 @@ export default function HubHomeNew() {
               <p className="text-xs text-white/30">Nenhuma tarefa encontrada</p>
             </div>
           ) : (
-            <div className="overflow-x-auto pb-4 flex-1">
-              <div className="flex gap-6 min-w-max h-full">
-                {spaces.map(space => (
-                  <TaskColumn key={space} spaceName={space} tasks={tasksBySpace[space]} />
-                ))}
-              </div>
+            <div className="flex-1 flex gap-6 pb-4">
+              {spaces.map(space => (
+                <TaskColumn key={space} spaceName={space} tasks={tasksBySpace[space]} />
+              ))}
             </div>
           )}
         </section>
