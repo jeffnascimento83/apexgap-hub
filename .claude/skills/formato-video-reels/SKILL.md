@@ -15,8 +15,12 @@ Referência só de **estrutura e estilo**: nunca copiar texto, marca ou identida
 
 ### Marca do usuário (preencher uma vez e manter atualizado)
 - @: @eujeff.falcao
-- Cores: roxo e branco (iguais ao logo). Fundo do painel: roxo bem escuro · acento e destaque da legenda: roxo · texto: branco. Hex exato do roxo: _(pedir ao usuário ou extrair do logo)_
-- Fonte título: _(preencher)_ · fonte mono/UI: _(preencher)_ · fonte legenda: _(preencher)_
+- Cores (extraídas do logo): roxo **#492B93** · branco **#FFFFFF** · cinza-grafite **#393939** (só no logo colorido). Fundo do painel: roxo bem escuro derivado do #492B93 (ex.: ~#14092B) · acento e caixa de destaque da legenda: #492B93 (usar versão mais clara, ex.: #7B5CD6, se faltar contraste no fundo escuro) · texto: branco.
+- Fonte título: **Montserrat Black, CAIXA ALTA** · fonte legenda: padrão (a do editor/sistema, bold, caixa alta como no formato) · fonte mono/UI do painel: opcional, escolher uma mono neutra.
+- Logos em `assets/` (mesma pasta desta skill):
+  - `logo-colorido.png` — ícone + APEX cinza + GAP roxo. Só para fundo **claro**.
+  - `logo-fundo-escuro.png` — ícone e APEX brancos + GAP roxo. Padrão para o painel escuro e para o fechamento.
+  - `logo-branco.png` — 100% branco (invisível em fundo claro). Para marca d'água ou fundo roxo/foto.
 - Nicho: Gestão de Tráfego Pago
 
 ### Ideias de cena e gancho para o nicho
