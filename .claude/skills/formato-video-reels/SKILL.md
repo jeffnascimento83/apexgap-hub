@@ -16,7 +16,7 @@ Referência só de **estrutura e estilo**: nunca copiar texto, marca ou identida
 ### Marca do usuário (preencher uma vez e manter atualizado)
 - @: @eujeff.falcao
 - Cores (extraídas do logo): roxo **#492B93** · branco **#FFFFFF** · cinza-grafite **#393939** (só no logo colorido). Fundo do painel: roxo bem escuro derivado do #492B93 (ex.: ~#14092B) · acento e caixa de destaque da legenda: #492B93 (usar versão mais clara, ex.: #7B5CD6, se faltar contraste no fundo escuro) · texto: branco.
-- Fonte título: **Montserrat Black, CAIXA ALTA** · fonte legenda: padrão (a do editor/sistema, bold, caixa alta como no formato) · fonte mono/UI do painel: opcional, escolher uma mono neutra.
+- Fonte título: **a mesma fonte do logo** (condensada, bold, CAIXA ALTA). Equivalente mais próximo: **Bebas Neue** (Google Fonts, gratuita). Se o usuário informar o nome exato da fonte do logo, trocar aqui. · fonte legenda: padrão (a do editor/sistema, bold, caixa alta como no formato) · fonte mono/UI do painel: opcional, escolher uma mono neutra.
 - Logos em `assets/` (mesma pasta desta skill):
   - `logo-colorido.png` — ícone + APEX cinza + GAP roxo. Só para fundo **claro**.
   - `logo-fundo-escuro.png` — ícone e APEX brancos + GAP roxo. Padrão para o painel escuro e para o fechamento.
