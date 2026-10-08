@@ -14,10 +14,15 @@ Referência só de **estrutura e estilo**: nunca copiar texto, marca ou identida
 - Duração-alvo (padrão: 60–80s).
 
 ### Marca do usuário (preencher uma vez e manter atualizado)
-- @: _(preencher)_
-- Cores: fundo _(preencher)_ · acento _(preencher)_ · destaque da legenda _(preencher)_
+- @: @eujeff.falcao
+- Cores: roxo e branco (iguais ao logo). Fundo do painel: roxo bem escuro · acento e destaque da legenda: roxo · texto: branco. Hex exato do roxo: _(pedir ao usuário ou extrair do logo)_
 - Fonte título: _(preencher)_ · fonte mono/UI: _(preencher)_ · fonte legenda: _(preencher)_
-- Nicho: _(preencher)_
+- Nicho: Gestão de Tráfego Pago
+
+### Ideias de cena e gancho para o nicho
+- Cenas de painel: dashboard do Gerenciador de Anúncios, CPA/ROAS/CTR subindo ou caindo, funil de campanha, estrutura de campanha > conjunto > anúncio, tela de criativos, checklist de otimização.
+- Ganchos: "Todo mundo me pergunta como eu escalo campanha sem queimar verba… e tem guru vendendo isso por R$ X", "Sua campanha não vende por causa de UM detalhe".
+- Gate do nicho (insight): a regra de decisão antes de mexer na campanha (ex.: quando pausar, quando escalar, o que checar antes de gastar verba).
 
 ## Especificação técnica
 - 9:16, 720×1280 (ou 1080×1920), 30fps, 60–80s.
